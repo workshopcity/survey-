@@ -164,22 +164,24 @@ form.addEventListener('submit', function(e) {
     date: new Date().toLocaleString()
   };
 
-  fetch(SCRIPT_URL, {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: {
-      "Content-Type": "application/json"
-    }
+ fetch(SCRIPT_URL, {
+  method: "POST",
+  body: new URLSearchParams({
+    name: data.name,
+    rego: data.rego,
+    rating: data.rating,
+    recommend: data.recommend,
+    comments: data.comments,
+    date: data.date
   })
-  .then(response => response.text()) // IMPORTANT FIX
-  .then(() => {
-    successMsg.textContent = "Thank you! Your feedback has been submitted.";
-    form.reset();
-  })
-  .catch(error => {
-    successMsg.textContent = "Error submitting form. Please try again.";
-    console.error(error);
-  });
+})
+.then(() => {
+  successMsg.textContent = "Thank you! Your feedback has been submitted.";
+  form.reset();
+})
+.catch(error => {
+  successMsg.textContent = "Error submitting form. Please try again.";
+  console.error(error);
 });
 </script>
 
