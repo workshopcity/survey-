@@ -141,13 +141,13 @@
 
   <div class="success" id="successMsg"></div>
 </div>
-
 <script>
 const form = document.getElementById('surveyForm');
 const successMsg = document.getElementById('successMsg');
 
-const SCRIPT_URL = https://script.google.com/macros/s/AKfycbzviOF8TXGjsOmS-2DJ5Kv-C70slGOKkzrZn17_IoiCXyShHka8Szsjy59Q4wHpUYHgKw/exec;
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxRiksR_3iUHRO1Y8wUJsqA7IfJWuKk7BjZbrZrwBA5gXO-cirdsvGFPbl9k5MF0K6Dzw/exec";
 
+// Pre-fill from URL
 const params = new URLSearchParams(window.location.search);
 if(params.get('name')) document.getElementById('name').value = params.get('name');
 if(params.get('rego')) document.getElementById('rego').value = params.get('rego');
@@ -171,14 +171,14 @@ form.addEventListener('submit', function(e) {
       "Content-Type": "application/json"
     }
   })
-  .then(res => res.json())
+  .then(response => response.text()) // IMPORTANT FIX
   .then(() => {
     successMsg.textContent = "Thank you! Your feedback has been submitted.";
     form.reset();
   })
-  .catch(err => {
-    successMsg.textContent = "Error submitting form.";
-    console.error(err);
+  .catch(error => {
+    successMsg.textContent = "Error submitting form. Please try again.";
+    console.error(error);
   });
 });
 </script>
