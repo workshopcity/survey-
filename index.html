@@ -4,10 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Workshop City WA Survey</title>
+
   <style>
     body { 
       font-family: Arial, sans-serif; 
-      background:#0f2f57; /* cleaner blue */
+      background:#0f2f57;
       margin:0;
       display:flex;
       flex-direction:column;
@@ -56,7 +57,7 @@
       border-radius:8px; 
       border:1px solid #ccc;
       font-size:16px;
-      box-sizing:border-box; /* FIX alignment issue */
+      box-sizing:border-box;
     }
 
     input:focus, select:focus, textarea:focus {
@@ -99,26 +100,31 @@
     }
   </style>
 </head>
+
 <body>
 
 <div class="header">
   <div class="logo">
-<img src="logo.png" alt="Workshop City WA Logo">
+    <img src="logo.png" alt="Workshop City WA Logo">
   </div>
 </div>
 
 <div class="container">
   <h2>Customer Feedback</h2>
 
-  <form id="surveyForm">
+  <form id="surveyForm"
+        method="POST"
+        action="https://script.google.com/macros/s/AKfycbwwIjOqno-QsKsBzgqr45NmaV41FNNcmVFs0k5Oi9ZjGbNN7t1mLk2BKuv_xg-UzOXlAw/exec"
+        target="hidden_iframe">
+
     <label>Full Name</label>
-    <input type="text" id="name" placeholder="Enter your name" required>
+    <input type="text" id="name" name="name" placeholder="Enter your name" required>
 
     <label>Registration Number</label>
-    <input type="text" id="rego" placeholder="e.g. 1ABC123">
+    <input type="text" id="rego" name="rego" placeholder="e.g. 1ABC123">
 
     <label>How would you rate our service?</label>
-    <select id="rating" required>
+    <select id="rating" name="rating" required>
       <option value="">Select rating</option>
       <option>Excellent</option>
       <option>Good</option>
@@ -127,61 +133,45 @@
     </select>
 
     <label>Would you recommend Workshop City WA?</label>
-    <select id="recommend">
+    <select id="recommend" name="recommend">
       <option value="">Select option</option>
       <option>Yes</option>
       <option>No</option>
     </select>
 
     <label>Additional Comments</label>
-    <textarea id="comments" placeholder="Tell us about your experience"></textarea>
+    <textarea id="comments" name="comments" placeholder="Tell us about your experience"></textarea>
+
+    <!-- Hidden date -->
+    <input type="hidden" name="date" id="date">
 
     <button type="submit">Submit Feedback</button>
   </form>
 
   <div class="success" id="successMsg"></div>
 </div>
+
+<!-- Hidden iframe (prevents page redirect) -->
+<iframe name="hidden_iframe" style="display:none;"></iframe>
+
 <script>
 const form = document.getElementById('surveyForm');
 const successMsg = document.getElementById('successMsg');
-
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwwIjOqno-QsKsBzgqr45NmaV41FNNcmVFs0k5Oi9ZjGbNN7t1mLk2BKuv_xg-UzOXlAw/exec";
 
 // Pre-fill from URL
 const params = new URLSearchParams(window.location.search);
 if(params.get('name')) document.getElementById('name').value = params.get('name');
 if(params.get('rego')) document.getElementById('rego').value = params.get('rego');
 
-form.addEventListener('submit', function(e) {
-  e.preventDefault();
+// Submit handler
+form.addEventListener('submit', function() {
+  document.getElementById('date').value = new Date().toLocaleString();
 
-  const data = {
-    name: document.getElementById('name').value,
-    rego: document.getElementById('rego').value,
-    rating: document.getElementById('rating').value,
-    recommend: document.getElementById('recommend').value,
-    comments: document.getElementById('comments').value,
-    date: new Date().toLocaleString()
-  };
-
- fetch(SCRIPT_URL, {
-  method: "POST",
-  body: new URLSearchParams({
-    name: data.name,
-    rego: data.rego,
-    rating: data.rating,
-    recommend: data.recommend,
-    comments: data.comments,
-    date: data.date
-  })
-})
-.then(() => {
   successMsg.textContent = "Thank you! Your feedback has been submitted.";
-  form.reset();
-})
-.catch(error => {
-  successMsg.textContent = "Error submitting form. Please try again.";
-  console.error(error);
+
+  setTimeout(() => {
+    form.reset();
+  }, 800);
 });
 </script>
 
